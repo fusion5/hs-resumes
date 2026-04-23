@@ -3,19 +3,19 @@ module TestMain (main) where
 import ArbitraryCV ()
 import ArbitraryContextCV ()
 import Autodocodec
-import Control.Monad (void)
 import Data.Aeson (FromJSON, Result (..), fromJSON)
+import Data.Foldable (traverse_)
 import DocumentTypes
 import PromptResolution (preparePrompts)
-import Samples (
-  cacheC,
-  documentT,
-  documentT1,
-  documentT2,
-  resultR1,
-  resultR2,
-  testContextCV,
- )
+import Samples
+  ( cacheC,
+    documentT,
+    documentT1,
+    documentT2,
+    resultR1,
+    resultR2,
+    testContextCV,
+  )
 import ShallowCV ()
 import ShallowEq (shouldBeShallow)
 import Test.Hspec
@@ -30,7 +30,7 @@ spec = modifyMaxSize (const 20) $ do
         prop "Then all results of preparePrompts call the prompt (no caching results)" $
           \document -> do
             let cv = preparePrompts testContextCV document Nothing
-            void $ traverse (\p -> isRunOllamaPrompt p `shouldBe` True) cv
+            traverse_ (\p -> isRunOllamaPrompt p `shouldBe` True) cv
     describe "Given any document and an identical old document" $
       describe "When we call preparePrompts" $
         prop "Then all results of preparePrompts are cached (no prompt is called)" $
@@ -38,7 +38,7 @@ spec = modifyMaxSize (const 20) $ do
             let inputDocument = preparePrompts testContextCV document Nothing
                 cacheDocument = fmap mkCache inputDocument
                 newDocument = preparePrompts testContextCV document (Just cacheDocument)
-            void $ traverse (\p -> isKeepCachedResult p `shouldBe` True) newDocument
+            traverse_ (\p -> isKeepCachedResult p `shouldBe` True) newDocument
     describe "Given test document T and cached document C" $
       it "Then cached document C matches the result of resolving T" $ do
         let expected = preparePrompts testContextCV documentT Nothing
@@ -67,15 +67,15 @@ prop_codecRoundtrip val =
 
 mkCache :: LLMPromptParameters -> LLMPromptResultText
 mkCache (RunOllamaPrompt _chatOps inputHashMD5) =
-  LLMPromptResultText{getPromptResultText = "TEST SUITE", ..}
-mkCache (KeepCachedResult getPromptResultText inputHashMD5) = LLMPromptResultText{..}
+  LLMPromptResultText {getPromptResultText = "TEST SUITE", ..}
+mkCache (KeepCachedResult getPromptResultText inputHashMD5) = LLMPromptResultText {..}
 
 isRunOllamaPrompt :: LLMPromptParameters -> Bool
-isRunOllamaPrompt RunOllamaPrompt{} = True
+isRunOllamaPrompt RunOllamaPrompt {} = True
 isRunOllamaPrompt _ = False
 
 isKeepCachedResult :: LLMPromptParameters -> Bool
-isKeepCachedResult KeepCachedResult{} = True
+isKeepCachedResult KeepCachedResult {} = True
 isKeepCachedResult _ = False
 
 main :: IO ()

@@ -1,6 +1,5 @@
 {-# LANGUAGE AllowAmbiguousTypes #-}
 {-# LANGUAGE DefaultSignatures #-}
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeOperators #-}
@@ -11,8 +10,6 @@ import Control.Exception
 import Control.Monad (unless)
 import Data.CallStack
 import Data.Functor.Compose
-import Data.Functor.Const
-import Data.Functor.Identity
 import Data.Text
 import GHC.Generics
 import Test.HUnit.Lang
@@ -55,9 +52,7 @@ instance GShallowEq U1 where
   gShallowEq _ _ = True
 
 instance (ShallowEq a, ShallowEq (b a)) => ShallowEq (Compose [] b a)
-instance (ShallowEq b) => ShallowEq (Const b a)
-instance (ShallowEq a) => ShallowEq (Identity a)
-instance (ShallowEq a) => ShallowEq ([a])
+instance (ShallowEq a) => ShallowEq [a]
 instance ShallowEq Text where shallowEq = (==)
 instance ShallowEq Integer where shallowEq = (==)
 
