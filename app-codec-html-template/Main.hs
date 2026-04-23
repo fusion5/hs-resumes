@@ -44,7 +44,7 @@ main = do
         (warnings, output) =
           renderMustacheW template $ mergeObjects (toJSON simpleCV) (extraFields today)
       TIO.putStrLn output
-      when (length warnings > 0) $ do
+      unless (null warnings) $ do
         hPutStrLn stderr "Mustache warnings:"
         forM_ warnings $ hPutStrLn stderr . displayMustacheWarning
  where

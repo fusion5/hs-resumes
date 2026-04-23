@@ -56,9 +56,13 @@ library
 executable codec-html-template
   main-is: Main.hs
   other-modules:
+      DocumentTypes
+      Lib
+      PromptResolution
       Paths_hs_resumes
   hs-source-dirs:
       app-codec-html-template
+      src
   default-extensions:
       DataKinds
       DeriveFunctor
@@ -98,9 +102,13 @@ executable codec-html-template
 executable codec-llm
   main-is: Main.hs
   other-modules:
+      DocumentTypes
+      Lib
+      PromptResolution
       Paths_hs_resumes
   hs-source-dirs:
       app-codec-llm
+      src
   default-extensions:
       DataKinds
       DeriveFunctor

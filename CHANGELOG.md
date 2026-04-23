@@ -1,12 +1,12 @@
 # Changelog for `hs-resume`
 
-TODO: not sure if contextSummary: headingContext: is defined properly at the moment. It gets
-passed as a context but the prompts specify: "Questo e il titolo della sezione Obiettivo". This 
-seems stupid or broken
 
 2026-04-23
 
 Split into separate repository: this way the CV/LLM tools are separate from the contents
+
+contextSummary: headingContext: was not used properly: it was getting passed as a context of
+the body. This was wrong.
 
 2026-02-16
 

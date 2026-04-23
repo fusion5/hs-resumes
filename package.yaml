@@ -61,7 +61,9 @@ library:
 executables:
   codec-llm:
     main: Main.hs
-    source-dirs: app-codec-llm
+    source-dirs: 
+      - app-codec-llm
+      - src
     ghc-options:
       - -threaded
       - -rtsopts
@@ -73,7 +75,9 @@ executables:
       - path
   codec-html-template:
     main: Main.hs
-    source-dirs: app-codec-html-template
+    source-dirs: 
+      - app-codec-html-template
+      - src
     ghc-options:
       - -threaded
       - -rtsopts
