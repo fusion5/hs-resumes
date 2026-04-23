@@ -4,6 +4,7 @@ import Control.Monad
 import Data.Aeson (Value (Object), eitherDecodeFileStrict, object, toJSON, (.=))
 import Data.Aeson.KeyMap qualified as KM
 import Data.Maybe (fromMaybe)
+import Data.String (fromString)
 import Data.Text
 import Data.Text.Lazy.IO qualified as TIO
 import Data.Time (getCurrentTime, utctDay)
@@ -16,7 +17,7 @@ import Text.Mustache
 data CLIArgs = CLIArgs
   { cvInputFile :: FilePath,
     cvTemplateFile :: FilePath,
-    templateLanguage :: Maybe Text
+    templateLanguage :: Maybe String
   }
   deriving (Show)
 
@@ -50,7 +51,8 @@ main = do
       today <- utctDay <$> getCurrentTime
       let simpleCV = fmap (removeTrailingPunctuation . getPromptResultText) cv
           (warnings, output) =
-            renderMustacheW template $ mergeObjects (toJSON simpleCV) (extraFields today templateLanguage)
+            renderMustacheW template $
+              mergeObjects (toJSON simpleCV) (extraFields today templateLanguage)
       TIO.putStrLn output
       unless (Prelude.null warnings) $ do
         hPutStrLn stderr "Mustache warnings:"
@@ -62,7 +64,7 @@ main = do
     extraFields today maybeLanguage =
       object
         [ "today" .= iso8601Show today,
-          "language" .= fromMaybe "english" maybeLanguage
+          fromString (fromMaybe "english" maybeLanguage) .= True
         ]
     cliOpts = Opt.info (cliArgs Opt.<**> Opt.helper) Opt.fullDesc
 
