@@ -3,10 +3,11 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
-module PromptResolution (
-  preparePrompts,
-  resolvePrompts,
-) where
+module PromptResolution
+  ( preparePrompts,
+    resolvePrompts,
+  )
+where
 
 import Codec.Serialise
 import Control.Monad (zipWithM)
@@ -27,15 +28,15 @@ import Prelude
 type TraverseAction a = Reader (Seq Text) a
 
 preparePrompts ::
-  ContextCV -> CV TextAtom -> Maybe (CV LLMPromptResultText) -> (CV LLMPromptParameters)
+  ContextCV -> CV TextAtom -> Maybe (CV LLMPromptResultText) -> CV LLMPromptParameters
 preparePrompts context maybeOldCV cv = runReader (prepare context maybeOldCV cv) mempty
 
 -- | Runs the actual LLM commands
 resolvePrompts :: OllamaConfig -> CV LLMPromptParameters -> IO (CV LLMPromptResultText)
 resolvePrompts ollamaConfig = traverse (resolveAtom ollamaConfig)
 
-resolveAtom :: OllamaConfig -> LLMPromptParameters -> IO (LLMPromptResultText)
-resolveAtom _ (KeepCachedResult getPromptResultText inputHashMD5) = pure $ LLMPromptResultText{..}
+resolveAtom :: OllamaConfig -> LLMPromptParameters -> IO LLMPromptResultText
+resolveAtom _ (KeepCachedResult getPromptResultText inputHashMD5) = pure $ LLMPromptResultText {..}
 resolveAtom ollamaConfig (RunOllamaPrompt chatOps messagesHash) = do
   putStr ">>> "
   pPrint chatOps
@@ -45,28 +46,32 @@ resolveAtom ollamaConfig (RunOllamaPrompt chatOps messagesHash) = do
         Left ollamaError -> do
           print ollamaError
           pure $ LLMPromptResultText "" messagesHash
-        Right (ChatResponse{message = Just (Message{..})}) -> do
+        Right (ChatResponse {message = Just (Message {..})}) -> do
           putStr "<<< "
           pPrint content
           pure $ LLMPromptResultText content messagesHash
-        Right (ChatResponse{message = Nothing}) -> do
+        Right (ChatResponse {message = Nothing}) -> do
           -- print ("Error! Empty response!" :: String)
           pure $ LLMPromptResultText "" messagesHash
     else
       pure $ LLMPromptResultText "" messagesHash
- where
-  runLLM = True
+  where
+    runLLM = True
 
 deriving instance Generic Role
+
 deriving instance Generic ModelOptions
+
 deriving instance Serialise Role
+
 deriving instance Serialise ModelOptions
 
 instance Serialise Message where
-  encode (Message{..}) = encode (role, content, images, thinking)
+  encode (Message {..}) = encode (role, content, images, thinking)
   decode = error "Unsupported"
+
 instance Serialise ChatOps where
-  encode (ChatOps{..}) = encode (modelName, messages, keepAlive, options, think)
+  encode (ChatOps {..}) = encode (modelName, messages, keepAlive, options, think)
   decode = error "Unsupported"
 
 prepareAtom ::
@@ -75,7 +80,7 @@ prepareAtom ::
   TextAtom ->
   Maybe LLMPromptResultText ->
   TraverseAction LLMPromptParameters
-prepareAtom modelName LLMInstructions{..} promptBody oldTextMaybe = local (|> llmContext) $ do
+prepareAtom modelName LLMInstructions {..} promptBody oldTextMaybe = local (|> llmContext) $ do
   contextStack <- ask
   let messages =
         fmap mkSystemMessage contextStack
@@ -85,7 +90,7 @@ prepareAtom modelName LLMInstructions{..} promptBody oldTextMaybe = local (|> ll
       messagesHash = MD5Hash $ MD5.hash $ BS.toStrict $ serialise cfg
   case oldTextMaybe of
     Nothing -> pure $ RunOllamaPrompt cfg messagesHash
-    Just LLMPromptResultText{..} ->
+    Just LLMPromptResultText {..} ->
       if messagesHash == inputHashMD5
         then pure $ KeepCachedResult getPromptResultText inputHashMD5
         else pure $ RunOllamaPrompt cfg messagesHash
@@ -95,7 +100,7 @@ prepare ::
   CV TextAtom ->
   Maybe (CV LLMPromptResultText) ->
   TraverseAction (CV LLMPromptParameters)
-prepare ContextCV{..} new oldMay = do
+prepare ContextCV {..} new oldMay = do
   local (|> llmContext ctxCVContext) $ do
     newLocation <-
       prepareAtom
@@ -144,48 +149,48 @@ prepare ContextCV{..} new oldMay = do
         ctxPractices
         (cvPractices new)
         (cvPractices <$> oldMay)
-        (\ctx -> zipWithMaybeM (preparePractice ctxModelName ctx))
+        (zipWithMaybeM . preparePractice ctxModelName)
     newLanguages <-
       prepareSection
         ctxModelName
         ctxSpokenLanguages
         (cvSpokenLanguages new)
         (cvSpokenLanguages <$> oldMay)
-        (\ctx -> zipWithMaybeM (prepareSpokenLanguage ctxModelName ctx))
+        (zipWithMaybeM . prepareSpokenLanguage ctxModelName)
     newWorkExperience <-
       prepareSection
         ctxModelName
         ctxWorkExperience
         (cvWorkExperience new)
         (cvWorkExperience <$> oldMay)
-        (\ctx -> zipWithMaybeM (prepareWorkExperience ctxModelName ctx))
+        (zipWithMaybeM . prepareWorkExperience ctxModelName)
     newEducation <-
       prepareSection
         ctxModelName
         ctxEducation
         (cvEducation new)
         (cvEducation <$> oldMay)
-        (\ctx -> zipWithMaybeM (prepareEducation ctxModelName ctx))
+        (zipWithMaybeM . prepareEducation ctxModelName)
     newAwards <-
       prepareSection
         ctxModelName
         ctxAwards
         (cvAwards new)
         (cvAwards <$> oldMay)
-        (\ctx -> zipWithMaybeM (prepareAwards ctxModelName ctx))
+        (zipWithMaybeM . prepareAwards ctxModelName)
     pure
       CV
-        { currentLocation = newLocation
-        , cvSummary = newSummary
-        , cvObjective = newObjective
-        , cvProgrammingLanguages = newProgrammingLanguages
-        , cvTechnologies = newTechnologies
-        , cvStandards = newStandards
-        , cvPractices = newPractices
-        , cvSpokenLanguages = newLanguages
-        , cvWorkExperience = newWorkExperience
-        , cvEducation = newEducation
-        , cvAwards = newAwards
+        { currentLocation = newLocation,
+          cvSummary = newSummary,
+          cvObjective = newObjective,
+          cvProgrammingLanguages = newProgrammingLanguages,
+          cvTechnologies = newTechnologies,
+          cvStandards = newStandards,
+          cvPractices = newPractices,
+          cvSpokenLanguages = newLanguages,
+          cvWorkExperience = newWorkExperience,
+          cvEducation = newEducation,
+          cvAwards = newAwards
         }
 
 prepareWorkExperience ::
@@ -194,14 +199,13 @@ prepareWorkExperience ::
   WorkExperience TextAtom ->
   Maybe (WorkExperience LLMPromptResultText) ->
   TraverseAction (WorkExperience LLMPromptParameters)
-prepareWorkExperience modelName ContextWorkExperience{..} new oldMay =
+prepareWorkExperience modelName ContextWorkExperience {..} new oldMay =
   WorkExperience (startTime new) (endTime new) (position new) (employer new)
     <$> prepareAtom modelName ctxweLocation (workLocation new) (workLocation <$> oldMay)
     <*> prepareExperienceType modelName ctxweJob (job new) (job <$> oldMay)
 
-{- | Only if the old constructor matches the new do we pass on the previous value, otherwise we
-pass Nothing.
--}
+-- | Only if the old constructor matches the new do we pass on the previous value, otherwise we
+-- pass Nothing.
 prepareExperienceType ::
   Text ->
   ContextExperienceType ->
@@ -210,27 +214,27 @@ prepareExperienceType ::
   TraverseAction (ExperienceType LLMPromptParameters)
 prepareExperienceType
   modelName
-  (ContextExperienceType{..})
+  (ContextExperienceType {..})
   (EmployeeExperience newEmployee)
   (Just (EmployeeExperience oldEmployee)) =
     EmployeeExperience <$> prepareEmployee modelName ctxEmployee newEmployee (Just oldEmployee)
 prepareExperienceType
   modelName
-  (ContextExperienceType{..})
+  (ContextExperienceType {..})
   (EmployeeExperience newEmployee)
   _ =
     -- the new constructor is different. there's no way to use the cache from the old one.
     EmployeeExperience <$> prepareEmployee modelName ctxEmployee newEmployee Nothing
 prepareExperienceType
   modelName
-  (ContextExperienceType{..})
+  (ContextExperienceType {..})
   (SelfEmployedExperience newSelfEmployed)
   (Just (SelfEmployedExperience oldSelfEmployed)) =
     SelfEmployedExperience
       <$> prepareSelfEmployed modelName ctxSelfEmployed newSelfEmployed (Just oldSelfEmployed)
 prepareExperienceType
   modelName
-  (ContextExperienceType{..})
+  (ContextExperienceType {..})
   (SelfEmployedExperience newSelfEmployed)
   _ =
     SelfEmployedExperience <$> prepareSelfEmployed modelName ctxSelfEmployed newSelfEmployed Nothing
@@ -241,7 +245,7 @@ prepareEducation ::
   Education TextAtom ->
   Maybe (Education LLMPromptResultText) ->
   TraverseAction (Education LLMPromptParameters)
-prepareEducation modelName ContextEducation{..} new oldMay =
+prepareEducation modelName ContextEducation {..} new oldMay =
   Education (eduStartTime new) (eduEndTime new)
     <$> prepareAtom modelName ctxeduDegree (eduDegree new) (eduDegree <$> oldMay)
     <*> pure (eduInstitution new)
@@ -257,7 +261,7 @@ prepareAwards ::
   Awards TextAtom ->
   Maybe (Awards LLMPromptResultText) ->
   TraverseAction (Awards LLMPromptParameters)
-prepareAwards modelName ContextAward{..} new oldMay =
+prepareAwards modelName ContextAward {..} new oldMay =
   Awards (awardTime new)
     <$> prepareAtom modelName ctxAward (awardDescription new) (awardDescription <$> oldMay)
 
@@ -267,7 +271,7 @@ prepareEducationDescription ::
   EducationDescription TextAtom ->
   Maybe (EducationDescription LLMPromptResultText) ->
   TraverseAction (EducationDescription LLMPromptParameters)
-prepareEducationDescription modelName ContextEducationDescription{..} new oldMay =
+prepareEducationDescription modelName ContextEducationDescription {..} new oldMay =
   EducationDescription
     <$> prepareAtom modelName ctxeddDescription (eduDescription new) (eduDescription <$> oldMay)
     <*> pure (eduLanguages new)
@@ -284,7 +288,7 @@ prepareEmployee ::
   Employee TextAtom ->
   Maybe (Employee LLMPromptResultText) ->
   TraverseAction (Employee LLMPromptParameters)
-prepareEmployee modelName ContextEmployee{..} new oldMaybe = do
+prepareEmployee modelName ContextEmployee {..} new oldMaybe = do
   Employee
     <$> prepareAtom
       modelName
@@ -302,7 +306,7 @@ prepareResponsibility ::
   Responsibility TextAtom ->
   Maybe (Responsibility LLMPromptResultText) ->
   TraverseAction (Responsibility LLMPromptParameters)
-prepareResponsibility modelName ContextResponsibility{..} newResponsibility oldResponsibility =
+prepareResponsibility modelName ContextResponsibility {..} newResponsibility oldResponsibility =
   Responsibility
     <$> prepareAtom
       modelName
@@ -341,9 +345,12 @@ prepareSelfEmployed ::
   SelfEmployed TextAtom ->
   Maybe (SelfEmployed LLMPromptResultText) ->
   TraverseAction (SelfEmployed LLMPromptParameters)
-prepareSelfEmployed modelName ContextSelfEmployed{..} new oldMay =
+prepareSelfEmployed modelName ContextSelfEmployed {..} new oldMay =
   SelfEmployed
-    <$> zipWithMaybeM (prepareCustomer modelName ctxseCustomer) (customers new) (customers <$> oldMay)
+    <$> zipWithMaybeM
+      (prepareCustomer modelName ctxseCustomer)
+      (customers new)
+      (customers <$> oldMay)
 
 prepareCustomer ::
   Text ->
@@ -351,7 +358,7 @@ prepareCustomer ::
   Customer TextAtom ->
   Maybe (Customer LLMPromptResultText) ->
   TraverseAction (Customer LLMPromptParameters)
-prepareCustomer modelName ContextCustomer{..} newCustomer oldCustomer =
+prepareCustomer modelName ContextCustomer {..} newCustomer oldCustomer =
   Customer
     <$> prepareAtom
       modelName
@@ -370,7 +377,7 @@ prepareSection ::
   Maybe (Section b1 LLMPromptResultText) ->
   (t1 -> t2 -> Maybe b1 -> TraverseAction b2) ->
   TraverseAction (Section b2 LLMPromptParameters)
-prepareSection modelName ContextSection{..} newSection oldSectionMaybe f = do
+prepareSection modelName ContextSection {..} newSection oldSectionMaybe f = do
   newHeading <-
     prepareAtom
       modelName
@@ -378,47 +385,44 @@ prepareSection modelName ContextSection{..} newSection oldSectionMaybe f = do
       (sectionHeading newSection)
       (sectionHeading <$> oldSectionMaybe)
   newBody <-
-    local (|> llmContext) $
-      f bodyContext (sectionBody newSection) (sectionBody <$> oldSectionMaybe)
+    f bodyContext (sectionBody newSection) (sectionBody <$> oldSectionMaybe)
   pure $ Section newHeading newBody
- where
-  LLMInstructions{..} = headingContext
 
 mkSystemMessage :: Text -> Message
 mkSystemMessage content =
   Message
-    { role = System
-    , images = Nothing
-    , tool_calls = Nothing
-    , thinking = Nothing
-    , ..
+    { role = System,
+      images = Nothing,
+      tool_calls = Nothing,
+      thinking = Nothing,
+      ..
     }
 
 mkUserMessage :: Text -> Message
 mkUserMessage content =
   Message
-    { role = User
-    , images = Nothing
-    , tool_calls = Nothing
-    , thinking = Nothing
-    , ..
+    { role = User,
+      images = Nothing,
+      tool_calls = Nothing,
+      thinking = Nothing,
+      ..
     }
 
 chatConfig :: Text -> NonEmpty Message -> ChatOps
 chatConfig modelName messages =
   ChatOps
-    { tools = Nothing
-    , format = Nothing
-    , stream = Nothing
-    , keepAlive = Nothing
-    , options =
+    { tools = Nothing,
+      format = Nothing,
+      stream = Nothing,
+      keepAlive = Nothing,
+      options =
         Just
           defaultModelOptions
-            { temperature = Just 0.1
-            , topP = Just 0.5
-            }
-    , think = Nothing
-    , ..
+            { temperature = Just 0.1,
+              topP = Just 0.5
+            },
+      think = Nothing,
+      ..
     }
 
 -- this is not your usual zip, it keeps calling f with a Nothing second parameter if [b] is shorter.
@@ -427,7 +431,4 @@ chatConfig modelName messages =
 zipWithMaybeM :: (Monad m) => (a -> Maybe b -> m c) -> [a] -> Maybe [b] -> m [c]
 zipWithMaybeM f as Nothing = mapM (`f` Nothing) as
 zipWithMaybeM f as (Just bs) =
-  zipWithM
-    (\a b -> f a b)
-    as
-    ((Prelude.map Just bs) ++ Prelude.repeat Nothing)
+  zipWithM f as (Prelude.map Just bs ++ Prelude.repeat Nothing)
