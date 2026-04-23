@@ -48,7 +48,9 @@ main = do
         hPutStrLn stderr "Mustache warnings:"
         forM_ warnings $ hPutStrLn stderr . displayMustacheWarning
   where
-    removeTrailingPunctuation = dropWhileEnd (\c -> c `Prelude.elem` ['.', ',', ';', ':'])
+    removeTrailingPunctuation =
+      dropWhileEnd
+        (\c -> c `Prelude.elem` ['.', ',', ';', ':', '\r', '\n'])
     extraFields today = object ["today" .= iso8601Show today]
     cliOpts = Opt.info (cliArgs Opt.<**> Opt.helper) Opt.fullDesc
 
