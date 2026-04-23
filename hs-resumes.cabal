@@ -1,0 +1,180 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.38.3.
+--
+-- see: https://github.com/sol/hpack
+
+name:           hs-resumes
+version:        0.1.0.0
+description:    Haskell personal resume generator
+author:         Dragos Ionita
+maintainer:     Dragos Ionita
+copyright:      2026 Dragos Ionita
+build-type:     Simple
+
+library
+  other-modules:
+      Paths_hs_resumes
+  hs-source-dirs:
+      src
+  default-extensions:
+      DataKinds
+      DeriveFunctor
+      DeriveGeneric
+      GeneralizedNewtypeDeriving
+      ImportQualifiedPost
+      LambdaCase
+      OverloadedStrings
+      QuasiQuotes
+      RecordWildCards
+      ScopedTypeVariables
+      StrictData
+      TypeApplications
+  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints
+  build-depends:
+      aeson
+    , aeson-pretty
+    , autodocodec
+    , autodocodec-yaml
+    , base >=4.7 && <5
+    , base16-bytestring
+    , base64-bytestring
+    , bytestring
+    , containers
+    , cryptohash-md5
+    , mtl
+    , ollama-haskell
+    , pretty-simple
+    , serialise
+    , text
+  default-language: Haskell2010
+
+executable codec-html-template
+  main-is: Main.hs
+  other-modules:
+      Paths_hs_resumes
+  hs-source-dirs:
+      app-codec-html-template
+  default-extensions:
+      DataKinds
+      DeriveFunctor
+      DeriveGeneric
+      GeneralizedNewtypeDeriving
+      ImportQualifiedPost
+      LambdaCase
+      OverloadedStrings
+      QuasiQuotes
+      RecordWildCards
+      ScopedTypeVariables
+      StrictData
+      TypeApplications
+  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , aeson-pretty
+    , autodocodec
+    , autodocodec-yaml
+    , base >=4.7 && <5
+    , base16-bytestring
+    , base64-bytestring
+    , bytestring
+    , containers
+    , cryptohash-md5
+    , hs-resume
+    , mtl
+    , ollama-haskell
+    , optparse-applicative
+    , pretty-simple
+    , serialise
+    , stache
+    , text
+    , time
+  default-language: Haskell2010
+
+executable codec-llm
+  main-is: Main.hs
+  other-modules:
+      Paths_hs_resumes
+  hs-source-dirs:
+      app-codec-llm
+  default-extensions:
+      DataKinds
+      DeriveFunctor
+      DeriveGeneric
+      GeneralizedNewtypeDeriving
+      ImportQualifiedPost
+      LambdaCase
+      OverloadedStrings
+      QuasiQuotes
+      RecordWildCards
+      ScopedTypeVariables
+      StrictData
+      TypeApplications
+  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson
+    , aeson-pretty
+    , autodocodec
+    , autodocodec-yaml
+    , base >=4.7 && <5
+    , base16-bytestring
+    , base64-bytestring
+    , bytestring
+    , containers
+    , cryptohash-md5
+    , directory
+    , hs-resume
+    , mtl
+    , ollama-haskell
+    , optparse-applicative
+    , path
+    , pretty-simple
+    , serialise
+    , text
+  default-language: Haskell2010
+
+test-suite hs-resume-test
+  type: exitcode-stdio-1.0
+  main-is: TestMain.hs
+  other-modules:
+      Paths_hs_resumes
+  hs-source-dirs:
+      test
+      src
+  default-extensions:
+      DataKinds
+      DeriveFunctor
+      DeriveGeneric
+      GeneralizedNewtypeDeriving
+      ImportQualifiedPost
+      LambdaCase
+      OverloadedStrings
+      QuasiQuotes
+      RecordWildCards
+      ScopedTypeVariables
+      StrictData
+      TypeApplications
+  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints -main-is TestMain
+  build-depends:
+      HUnit
+    , QuickCheck
+    , aeson
+    , aeson-pretty
+    , autodocodec
+    , autodocodec-yaml
+    , base >=4.7 && <5
+    , base16-bytestring
+    , base64-bytestring
+    , bytestring
+    , call-stack
+    , containers
+    , cryptohash-md5
+    , generic-arbitrary
+    , hspec
+    , mtl
+    , ollama-haskell
+    , pretty-simple
+    , quickcheck-instances
+    , serialise
+    , text
+  default-language: Haskell2010

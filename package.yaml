@@ -1,0 +1,99 @@
+# yaml-language-server: $schema=empty-schema.json
+#
+name: hs-resumes
+version: 0.1.0.0
+author: "Dragos Ionita"
+copyright: "2026 Dragos Ionita"
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+description: Haskell personal resume generator
+
+dependencies:
+  - aeson
+  - aeson-pretty
+  - autodocodec
+  - autodocodec-yaml
+  - base >= 4.7 && < 5
+  - base16-bytestring
+  - base64-bytestring
+  - bytestring
+  - containers
+  - cryptohash-md5
+  - mtl
+  - ollama-haskell
+  - pretty-simple
+  - serialise
+  - text
+
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Werror
+  - -Widentities
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wmissing-export-lists
+  - -Wmissing-home-modules
+  - -Wno-orphans
+  - -Wpartial-fields
+  - -Wredundant-constraints
+
+default-extensions:
+  - DataKinds
+  - DeriveFunctor
+  - DeriveGeneric
+  - GeneralizedNewtypeDeriving
+  - ImportQualifiedPost
+  - LambdaCase
+  - OverloadedStrings
+  - QuasiQuotes
+  - RecordWildCards
+  - ScopedTypeVariables
+  - StrictData
+  - TypeApplications
+
+library:
+  source-dirs: src
+
+executables:
+  codec-llm:
+    main: Main.hs
+    source-dirs: app-codec-llm
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - directory
+      - hs-resume
+      - optparse-applicative
+      - path
+  codec-html-template:
+    main: Main.hs
+    source-dirs: app-codec-html-template
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N
+    dependencies:
+      - hs-resume
+      - optparse-applicative
+      - stache
+      - time
+
+tests:
+  hs-resume-test:
+    main: TestMain
+    source-dirs:
+      - test
+      - src
+    dependencies:
+      - HUnit
+      - QuickCheck
+      - call-stack
+      - generic-arbitrary
+      - hspec
+      - quickcheck-instances
