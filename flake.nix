@@ -7,7 +7,7 @@
     nixpkgs-cabal-fmt.url = "github:nixos/nixpkgs/09061f748ee21f68a089cd5d91ec1859cd93d0be";
   };
   outputs = inputs @ {
-    self,
+    # self,
     nixpkgs,
     flake-parts,
     ...
@@ -17,9 +17,10 @@
       imports = [inputs.haskell-flake.flakeModule];
 
       perSystem = {
-        self',
+        # self',
         system,
         pkgs,
+        # config,
         ...
       }: {
         haskellProjects.default = {
@@ -44,6 +45,9 @@
             all = {
               haddock = true;
             };
+
+            # Lets use the bins directly
+            enableSeparateBinOutput = true;
           };
 
           devShell = {
