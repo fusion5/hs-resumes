@@ -3,6 +3,7 @@ module Main (main) where
 import Control.Monad
 import Data.Aeson (Value (Object), eitherDecodeFileStrict, object, toJSON, (.=))
 import Data.Aeson.KeyMap qualified as KM
+import Data.Maybe (fromMaybe)
 import Data.Text
 import Data.Text.Lazy.IO qualified as TIO
 import Data.Time (getCurrentTime, utctDay)
@@ -14,7 +15,8 @@ import Text.Mustache
 
 data CLIArgs = CLIArgs
   { cvInputFile :: FilePath,
-    cvTemplateFile :: FilePath
+    cvTemplateFile :: FilePath,
+    templateLanguage :: Maybe Text
   }
   deriving (Show)
 
@@ -31,6 +33,12 @@ cliArgs =
           <> Opt.metavar "FILE"
           <> Opt.help "Input .mustache template file"
       )
+    <*> Opt.optional
+      ( Opt.strOption
+          ( Opt.long "language"
+              <> Opt.help "Language parameter, relayed to the mustache template. Default 'english'"
+          )
+      )
 
 main :: IO ()
 main = do
@@ -42,7 +50,7 @@ main = do
       today <- utctDay <$> getCurrentTime
       let simpleCV = fmap (removeTrailingPunctuation . getPromptResultText) cv
           (warnings, output) =
-            renderMustacheW template $ mergeObjects (toJSON simpleCV) (extraFields today)
+            renderMustacheW template $ mergeObjects (toJSON simpleCV) (extraFields today templateLanguage)
       TIO.putStrLn output
       unless (Prelude.null warnings) $ do
         hPutStrLn stderr "Mustache warnings:"
@@ -51,7 +59,11 @@ main = do
     removeTrailingPunctuation =
       dropWhileEnd
         (\c -> c `Prelude.elem` ['.', ',', ';', ':', '\r', '\n'])
-    extraFields today = object ["today" .= iso8601Show today]
+    extraFields today maybeLanguage =
+      object
+        [ "today" .= iso8601Show today,
+          "language" .= fromMaybe "english" maybeLanguage
+        ]
     cliOpts = Opt.info (cliArgs Opt.<**> Opt.helper) Opt.fullDesc
 
 mergeObjects :: Value -> Value -> Value
