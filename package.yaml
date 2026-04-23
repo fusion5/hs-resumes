@@ -68,7 +68,7 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - directory
-      - hs-resume
+      - hs-resumes
       - optparse-applicative
       - path
   codec-html-template:
@@ -79,13 +79,13 @@ executables:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - hs-resume
+      - hs-resumes
       - optparse-applicative
       - stache
       - time
 
 tests:
-  hs-resume-test:
+  hs-resumes-test:
     main: TestMain
     source-dirs:
       - test

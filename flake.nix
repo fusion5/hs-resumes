@@ -70,8 +70,8 @@
             # Add extra parameters to the underlying mkShell call
             mkShellArgs = {
               CABAL_BUILDDIR = "/tmp/hs-resumes-cabal-build";
-              # For refresh tests: a second pair of server certificates
               nativeBuildInputs = [
+                pkgs.zlib
                 pkgs.hpack
               ];
               shellHook = ''
