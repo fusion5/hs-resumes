@@ -4,6 +4,10 @@ TODO: not sure if contextSummary: headingContext: is defined properly at the mom
 passed as a context but the prompts specify: "Questo e il titolo della sezione Obiettivo". This 
 seems stupid or broken
 
+2026-04-23
+
+Split into separate repository: this way the CV/LLM tools are separate from the contents
+
 2026-02-16
 
 Added model to cv.yaml file. This should prevent caching tests from failing in case of
