@@ -1,11 +1,9 @@
 {-# LANGUAGE DeriveTraversable #-}
-{-# LANGUAGE DerivingStrategies #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module DocumentTypes (module DocumentTypes)
-where
+module DocumentTypes (module DocumentTypes) where
 
 import Autodocodec
 import Data.Aeson (FromJSON, ToJSON)
@@ -36,9 +34,9 @@ instance IsString MD5Hash where
     Left err -> error $ "Invalid hex string literal: " ++ err
 
 data LLMPromptResultText = LLMPromptResultText
-  { getPromptResultText :: Text
-  , inputHashMD5 :: MD5Hash
-  -- ^ The hash of the LLM configuration and input messages that produced this LLM text
+  { getPromptResultText :: Text,
+    -- | The hash of the LLM configuration and input messages that produced this LLM text
+    inputHashMD5 :: MD5Hash
   }
   deriving (Show, Eq)
 
@@ -49,23 +47,23 @@ data LLMPromptParameters
   deriving (Show, Eq)
 
 data ProgrammingLanguage = ProgrammingLanguage
-  { plCSSIcon :: Maybe Text
-  -- ^ e.g. nf-mysql, nf-c, nf-haskell...
-  , unProgrammingLanguage :: Text
+  { -- | e.g. nf-mysql, nf-c, nf-haskell...
+    plCSSIcon :: Maybe Text,
+    unProgrammingLanguage :: Text
   }
   deriving (Show, Eq, Generic)
 
 data Technology = Technology
-  { techCSSIcon :: Maybe Text
-  -- ^ e.g. nf-mysql, nf-c, nf-haskell...
-  , unTechnology :: Text
+  { -- | e.g. nf-mysql, nf-c, nf-haskell...
+    techCSSIcon :: Maybe Text,
+    unTechnology :: Text
   }
   deriving (Show, Eq, Generic)
 
 data Standard = Standard
-  { standardCSSIcon :: Maybe Text
-  -- ^ e.g. nf-mysql, nf-c, nf-haskell...
-  , unStandard :: Text
+  { -- | e.g. nf-mysql, nf-c, nf-haskell...
+    standardCSSIcon :: Maybe Text,
+    unStandard :: Text
   }
   deriving (Show, Eq, Generic)
 
@@ -81,30 +79,30 @@ newtype Heading a = Heading a
   deriving (Show, Eq, IsString, Functor, Foldable, Traversable, Generic)
 
 data TimePoint = TimePoint
-  { year :: Integer
-  , month :: Integer
+  { year :: Integer,
+    month :: Integer
   }
   deriving (Show, Eq, Generic)
 
 data Responsibility a = Responsibility
-  { description :: a
-  , languages :: [ProgrammingLanguage]
-  , technologies :: [Technology]
-  , standards :: [Standard]
-  , practices :: [SWEPractice a]
+  { description :: a,
+    languages :: [ProgrammingLanguage],
+    technologies :: [Technology],
+    standards :: [Standard],
+    practices :: [SWEPractice a]
   }
   deriving (Show, Eq, Functor, Foldable, Traversable, Generic)
 
 data Customer a = Customer
-  { customerDescription :: a
-  , customerResponsibilities :: [Responsibility a]
+  { customerDescription :: a,
+    customerResponsibilities :: [Responsibility a]
   }
   deriving (Eq, Show, Functor, Foldable, Traversable, Generic)
 
 data Employee a
   = Employee
-  { employerDescription :: a
-  , employerResponsibilities :: [Responsibility a]
+  { employerDescription :: a,
+    employerResponsibilities :: [Responsibility a]
   }
   deriving (Eq, Show, Functor, Foldable, Traversable, Generic)
 
@@ -120,85 +118,85 @@ data ExperienceType a
 
 data WorkExperience a
   = WorkExperience
-  { startTime :: TimePoint
-  , endTime :: TimePoint
-  , position :: Text
-  , employer :: Text
-  , workLocation :: a
-  , job :: ExperienceType a
+  { startTime :: TimePoint,
+    endTime :: TimePoint,
+    position :: Text,
+    employer :: Text,
+    workLocation :: a,
+    job :: ExperienceType a
   }
   deriving (Eq, Show, Functor, Foldable, Traversable, Generic)
 
 data EducationDescription a = EducationDescription
-  { eduDescription :: a
-  , eduLanguages :: [ProgrammingLanguage]
-  , eduTechnologies :: [Technology]
-  , eduStandards :: [Standard]
-  , eduPractices :: [SWEPractice a]
+  { eduDescription :: a,
+    eduLanguages :: [ProgrammingLanguage],
+    eduTechnologies :: [Technology],
+    eduStandards :: [Standard],
+    eduPractices :: [SWEPractice a]
   }
   deriving (Eq, Show, Functor, Foldable, Traversable, Generic)
 
 data Education a = Education
-  { eduStartTime :: TimePoint
-  , eduEndTime :: TimePoint
-  , eduDegree :: a
-  , eduInstitution :: Text
-  , eduLocation :: a
-  , eduDescriptions :: [EducationDescription a]
+  { eduStartTime :: TimePoint,
+    eduEndTime :: TimePoint,
+    eduDegree :: a,
+    eduInstitution :: Text,
+    eduLocation :: a,
+    eduDescriptions :: [EducationDescription a]
   }
   deriving (Eq, Show, Functor, Foldable, Traversable, Generic)
 
 data Awards a = Awards
-  { awardTime :: TimePoint
-  , awardDescription :: a
+  { awardTime :: TimePoint,
+    awardDescription :: a
   }
   deriving (Eq, Show, Functor, Foldable, Traversable, Generic)
 
 data Section b a = Section
-  { sectionHeading :: a
-  , sectionBody :: b
+  { sectionHeading :: a,
+    sectionBody :: b
   }
   deriving (Eq, Show, Foldable, Functor, Traversable, Generic)
 
 instance Bifunctor Section where
   bimap :: (a -> b) -> (c -> d) -> Section a c -> Section b d
-  bimap f g (Section{..}) =
+  bimap f g (Section {..}) =
     Section
-      { sectionHeading = g sectionHeading
-      , sectionBody = f sectionBody
+      { sectionHeading = g sectionHeading,
+        sectionBody = f sectionBody
       }
 
 data CV a = CV
-  { currentLocation :: a
-  , cvSummary :: Section a a
-  , cvObjective :: Section a a
-  , cvProgrammingLanguages :: Section [ProgrammingLanguage] a
-  , cvTechnologies :: Section [Technology] a
-  , cvStandards :: Section [Standard] a
-  , cvPractices :: Section [SWEPractice a] a
-  , cvSpokenLanguages :: Section [SpokenLanguage a] a
-  , cvWorkExperience :: Section [WorkExperience a] a
-  , cvEducation :: Section [Education a] a
-  , cvAwards :: Section [Awards a] a
+  { currentLocation :: a,
+    cvSummary :: Section a a,
+    cvObjective :: Section a a,
+    cvProgrammingLanguages :: Section [ProgrammingLanguage] a,
+    cvTechnologies :: Section [Technology] a,
+    cvStandards :: Section [Standard] a,
+    cvPractices :: Section [SWEPractice a] a,
+    cvSpokenLanguages :: Section [SpokenLanguage a] a,
+    cvWorkExperience :: Section [WorkExperience a] a,
+    cvEducation :: Section [Education a] a,
+    cvAwards :: Section [Awards a] a
   }
   deriving (Eq, Show, Generic)
   deriving (FromJSON, ToJSON) via (Autodocodec (CV a))
 
 instance Functor CV where
   fmap :: (a -> b) -> CV a -> CV b
-  fmap f (CV{..}) =
+  fmap f (CV {..}) =
     CV
-      { currentLocation = f currentLocation
-      , cvSummary = bimap f f cvSummary
-      , cvObjective = bimap f f cvObjective
-      , cvProgrammingLanguages = fmap f cvProgrammingLanguages
-      , cvTechnologies = fmap f cvTechnologies
-      , cvStandards = fmap f cvStandards
-      , cvPractices = bimap (fmap (fmap f)) f cvPractices
-      , cvSpokenLanguages = bimap (fmap (fmap f)) f cvSpokenLanguages
-      , cvWorkExperience = bimap (fmap (fmap f)) f cvWorkExperience
-      , cvEducation = bimap (fmap (fmap f)) f cvEducation
-      , cvAwards = bimap (fmap (fmap f)) f cvAwards
+      { currentLocation = f currentLocation,
+        cvSummary = bimap f f cvSummary,
+        cvObjective = bimap f f cvObjective,
+        cvProgrammingLanguages = fmap f cvProgrammingLanguages,
+        cvTechnologies = fmap f cvTechnologies,
+        cvStandards = fmap f cvStandards,
+        cvPractices = bimap (fmap (fmap f)) f cvPractices,
+        cvSpokenLanguages = bimap (fmap (fmap f)) f cvSpokenLanguages,
+        cvWorkExperience = bimap (fmap (fmap f)) f cvWorkExperience,
+        cvEducation = bimap (fmap (fmap f)) f cvEducation,
+        cvAwards = bimap (fmap (fmap f)) f cvAwards
       }
 
 instance Foldable CV where
@@ -214,10 +212,10 @@ instance Foldable CV where
                   foldNested (cvWorkExperience cv) $
                     foldNested (cvEducation cv) $
                       foldNested (cvAwards cv) z
-   where
-    foldOpaque (Section h _) acc = f h acc
-    foldPlain (Section h b) acc = f h (f b acc)
-    foldNested (Section h b) acc = f h (Prelude.foldr (flip (Prelude.foldr f)) acc b)
+    where
+      foldOpaque (Section h _) = f h
+      foldPlain (Section h b) acc = f h (f b acc)
+      foldNested (Section h b) acc = f h (Prelude.foldr (flip (Prelude.foldr f)) acc b)
 
 instance Traversable CV where
   traverse :: (Applicative f) => (a -> f b) -> CV a -> f (CV b)
@@ -234,44 +232,51 @@ instance Traversable CV where
       <*> traverseNested (cvWorkExperience cv)
       <*> traverseNested (cvEducation cv)
       <*> traverseNested (cvAwards cv)
-   where
-    traversePlain (Section h b) = Section <$> f h <*> f b
-    traverseOpaque (Section h b) = Section <$> f h <*> pure b
-    traverseNested (Section h b) = Section <$> f h <*> traverse (traverse f) b
+    where
+      traversePlain (Section h b) = Section <$> f h <*> f b
+      traverseOpaque (Section h b) = Section <$> f h <*> pure b
+      traverseNested (Section h b) = Section <$> f h <*> traverse (traverse f) b
 
 -- Context types provide context for the CV structure. They are nested to make their definition
 -- more intuitive. We basically zip ContextCV and CV in the context of PromptResolution module.
 -- Along the context we also specify the transform action to pass to the LLM
 data LLMInstructions = LLMInstructions
-  { llmContext :: Text
-  , llmImperative :: Text
+  { llmContext :: Text,
+    llmImperative :: Text
   }
   deriving (Eq, Show)
+
 mkInstr :: Text -> Text -> LLMInstructions
-mkInstr llmContext llmImperative = LLMInstructions{..}
+mkInstr llmContext llmImperative = LLMInstructions {..}
+
 newtype ContextSWEPractice = ContextSWEPractice
   { swePracticeInstructions :: LLMInstructions
   }
   deriving (Eq, Show)
+
 newtype ContextSpokenLanguage = ContextSpokenLanguage
   { spokenLanguageInstructions :: LLMInstructions
   }
   deriving (Eq, Show)
+
 data ContextEmployee = ContextEmployee
-  { ctxeEmployerDescription :: LLMInstructions
-  , ctxeResponsibilities :: ContextResponsibility
+  { ctxeEmployerDescription :: LLMInstructions,
+    ctxeResponsibilities :: ContextResponsibility
   }
   deriving (Eq, Show)
+
 data ContextResponsibility = ContextResponsibility
-  { ctxrespDescription :: LLMInstructions
-  , ctxrespPractice :: ContextSWEPractice
+  { ctxrespDescription :: LLMInstructions,
+    ctxrespPractice :: ContextSWEPractice
   }
   deriving (Eq, Show)
+
 data ContextCustomer = ContextCustomer
-  { ctxcuCustomerDescription :: LLMInstructions
-  , ctxcuResponsibility :: ContextResponsibility
+  { ctxcuCustomerDescription :: LLMInstructions,
+    ctxcuResponsibility :: ContextResponsibility
   }
   deriving (Eq, Show)
+
 newtype ContextSelfEmployed = ContextSelfEmployed
   { ctxseCustomer :: ContextCustomer
   }
@@ -281,49 +286,55 @@ newtype ContextSelfEmployed = ContextSelfEmployed
 -- specify both cases
 data ContextExperienceType
   = ContextExperienceType
-  { ctxEmployee :: ContextEmployee
-  , ctxSelfEmployed :: ContextSelfEmployed
+  { ctxEmployee :: ContextEmployee,
+    ctxSelfEmployed :: ContextSelfEmployed
   }
   deriving (Eq, Show)
+
 data ContextWorkExperience = ContextWorkExperience
-  { ctxweLocation :: LLMInstructions -- E.g. this is the location of a job
-  , ctxweJob :: ContextExperienceType
+  { ctxweLocation :: LLMInstructions, -- E.g. this is the location of a job
+    ctxweJob :: ContextExperienceType
   }
   deriving (Eq, Show)
+
 data ContextSection a = ContextSection
-  { headingContext :: LLMInstructions
-  , bodyContext :: a
+  { headingContext :: LLMInstructions,
+    bodyContext :: a
   }
   deriving (Eq, Show)
+
 data ContextEducationDescription = ContextEducationDescription
-  { ctxeddDescription :: LLMInstructions
-  , ctxeddSWEPractices :: ContextSWEPractice
+  { ctxeddDescription :: LLMInstructions,
+    ctxeddSWEPractices :: ContextSWEPractice
   }
   deriving (Eq, Show)
+
 data ContextEducation = ContextEducation
-  { ctxeduDegree :: LLMInstructions
-  , ctxeduLocation :: LLMInstructions
-  , ctxeduDescription :: ContextEducationDescription
+  { ctxeduDegree :: LLMInstructions,
+    ctxeduLocation :: LLMInstructions,
+    ctxeduDescription :: ContextEducationDescription
   }
   deriving (Eq, Show)
+
 newtype ContextAward = ContextAward
   { ctxAward :: LLMInstructions
   }
   deriving (Eq, Show)
+
 data ContextCV = ContextCV
-  { ctxModelName :: Text
-  , ctxCVContext :: LLMInstructions
-  , ctxCVLocation :: LLMInstructions
-  , ctxSummary :: ContextSection LLMInstructions
-  , ctxObjective :: ContextSection LLMInstructions
-  , ctxProgrammingLanguage :: ContextSection ()
-  , ctxTechnologies :: ContextSection ()
-  , ctxStandards :: ContextSection ()
-  , ctxPractices :: ContextSection ContextSWEPractice
-  , ctxSpokenLanguages :: ContextSection ContextSpokenLanguage
-  , ctxWorkExperience :: ContextSection ContextWorkExperience
-  , ctxEducation :: ContextSection ContextEducation
-  , ctxAwards :: ContextSection ContextAward
+  { ctxModelName :: Text,
+    ctxCVContext :: LLMInstructions,
+    ctxCVLocation :: LLMInstructions,
+    ctxSummary :: ContextSection LLMInstructions,
+    ctxObjective :: ContextSection LLMInstructions,
+    ctxProgrammingLanguage :: ContextSection (),
+    ctxTechnologies :: ContextSection (),
+    ctxStandards :: ContextSection (),
+    ctxPractices :: ContextSection ContextSWEPractice,
+    ctxSpokenLanguages :: ContextSection ContextSpokenLanguage,
+    ctxWorkExperience :: ContextSection ContextWorkExperience,
+    ctxEducation :: ContextSection ContextEducation,
+    ctxAwards :: ContextSection ContextAward
   }
   deriving (Eq, Show)
   deriving (FromJSON, ToJSON) via (Autodocodec ContextCV)
@@ -526,39 +537,39 @@ instance (HasCodec a) => HasCodec (SpokenLanguage a) where
 
 instance HasCodec Standard where
   codec = disjointMatchChoiceCodec simpleCodec complexCodec decide
-   where
-    decide value@(Standard Nothing _) = Left value
-    decide value@(Standard{}) = Right value
-    simpleCodec = dimapCodec (Standard Nothing) unStandard textCodec
-    complexCodec =
-      object "Standard" $
-        Standard
-          <$> optionalField "icon" "Icon, optional" .= standardCSSIcon
-          <*> requiredField "text" "Standard" .= unStandard
+    where
+      decide value@(Standard Nothing _) = Left value
+      decide value@(Standard {}) = Right value
+      simpleCodec = dimapCodec (Standard Nothing) unStandard textCodec
+      complexCodec =
+        object "Standard" $
+          Standard
+            <$> optionalField "icon" "Icon, optional" .= standardCSSIcon
+            <*> requiredField "text" "Standard" .= unStandard
 
 instance HasCodec Technology where
   codec = disjointMatchChoiceCodec simpleCodec complexCodec decide
-   where
-    decide value@(Technology Nothing _) = Left value
-    decide value@(Technology{}) = Right value
-    simpleCodec = dimapCodec (Technology Nothing) unTechnology textCodec
-    complexCodec =
-      object "Technology" $
-        Technology
-          <$> optionalField "icon" "Icon, optional" .= techCSSIcon
-          <*> requiredField "text" "Programming Language" .= unTechnology
+    where
+      decide value@(Technology Nothing _) = Left value
+      decide value@(Technology {}) = Right value
+      simpleCodec = dimapCodec (Technology Nothing) unTechnology textCodec
+      complexCodec =
+        object "Technology" $
+          Technology
+            <$> optionalField "icon" "Icon, optional" .= techCSSIcon
+            <*> requiredField "text" "Programming Language" .= unTechnology
 
 instance HasCodec ProgrammingLanguage where
   codec = disjointMatchChoiceCodec simpleCodec complexCodec decide
-   where
-    decide value@(ProgrammingLanguage Nothing _) = Left value
-    decide value@(ProgrammingLanguage{}) = Right value
-    simpleCodec = dimapCodec (ProgrammingLanguage Nothing) unProgrammingLanguage textCodec
-    complexCodec =
-      object "ProgrammingLanguage" $
-        ProgrammingLanguage
-          <$> optionalField "icon" "Icon, optional" .= plCSSIcon
-          <*> requiredField "text" "Programming Language" .= unProgrammingLanguage
+    where
+      decide value@(ProgrammingLanguage Nothing _) = Left value
+      decide value@(ProgrammingLanguage {}) = Right value
+      simpleCodec = dimapCodec (ProgrammingLanguage Nothing) unProgrammingLanguage textCodec
+      complexCodec =
+        object "ProgrammingLanguage" $
+          ProgrammingLanguage
+            <$> optionalField "icon" "Icon, optional" .= plCSSIcon
+            <*> requiredField "text" "Programming Language" .= unProgrammingLanguage
 
 -- dimapCodec Standard unStandard textCodec
 
@@ -575,22 +586,22 @@ instance (HasCodec a) => HasCodec (WorkExperience a) where
 
 instance (HasCodec a) => HasCodec (ExperienceType a) where
   codec = disjointMatchChoiceCodec employeeCodec selfEmployedCodec decide
-   where
-    decide :: ExperienceType a -> Either (ExperienceType a) (ExperienceType a)
-    decide experienceType@(EmployeeExperience{}) = Left experienceType
-    decide experienceType@(SelfEmployedExperience{}) = Right experienceType
-    employeeCodec =
-      object "EmployeeExperience" $
-        EmployeeExperience
-          <$> requiredField "employee" "Employee" .= unEE
-    selfEmployedCodec =
-      object "SelfEmployedExperience" $
-        SelfEmployedExperience
-          <$> requiredField "selfEmployed" "Self employed" .= unSEE
-    unEE (EmployeeExperience e) = e
-    unEE _ = error "logical error"
-    unSEE (SelfEmployedExperience e) = e
-    unSEE _ = error "logical error"
+    where
+      decide :: ExperienceType a -> Either (ExperienceType a) (ExperienceType a)
+      decide experienceType@(EmployeeExperience {}) = Left experienceType
+      decide experienceType@(SelfEmployedExperience {}) = Right experienceType
+      employeeCodec =
+        object "EmployeeExperience" $
+          EmployeeExperience
+            <$> requiredField "employee" "Employee" .= unEE
+      selfEmployedCodec =
+        object "SelfEmployedExperience" $
+          SelfEmployedExperience
+            <$> requiredField "selfEmployed" "Self employed" .= unSEE
+      unEE (EmployeeExperience e) = e
+      unEE _ = error "logical error"
+      unSEE (SelfEmployedExperience e) = e
+      unSEE _ = error "logical error"
 
 instance (HasCodec a) => HasCodec (SelfEmployed a) where
   codec =
@@ -634,8 +645,8 @@ instance HasCodec LLMPromptResultText where
 instance HasCodec MD5Hash where
   -- FIXME: decodeUtf8 is unsafe, should use decodeUtf8'
   codec = dimapCodec (MD5Hash . decodeBase64) (T.decodeUtf8 . B64.encode . getHash) textCodec
-   where
-    decodeBase64 text =
-      case B64.decode (T.encodeUtf8 text) of
-        Left err -> error $ "Invalid Base64: " ++ err
-        Right bs -> bs
+    where
+      decodeBase64 text =
+        case B64.decode (T.encodeUtf8 text) of
+          Left err -> error $ "Invalid Base64: " ++ err
+          Right bs -> bs
