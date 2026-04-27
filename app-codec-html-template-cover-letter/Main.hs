@@ -52,18 +52,14 @@ main = do
     Just (letter :: CoverLetter Text) -> do
       template <- compileMustacheFile letterTemplateFile
       today <- utctDay <$> getCurrentTime
-      let coverLetter = fmap removeTrailingPunctuation letter
-          (warnings, output) =
+      let (warnings, output) =
             renderMustacheW template $
-              mergeObjects (toJSON coverLetter) (extraFields today templateLanguage)
+              mergeObjects (toJSON letter) (extraFields today templateLanguage)
       TIO.putStrLn output
       unless (Prelude.null warnings) $ do
         hPutStrLn stderr "Mustache warnings:"
         forM_ warnings $ hPutStrLn stderr . displayMustacheWarning
   where
-    removeTrailingPunctuation =
-      dropWhileEnd
-        (\c -> c `Prelude.elem` ['.', ',', ';', ':', '\r', '\n'])
     extraFields today maybeLanguage =
       object
         [ "today" .= iso8601Show today,
