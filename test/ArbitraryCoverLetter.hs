@@ -18,7 +18,7 @@ instance (Arbitrary a) => Arbitrary (CoverLetter a) where
       <*> arbitrary
       <*> arbitrary
       <*> arbitrary
-      <*> (Paragraph <$> arbitrary) -- arbitrary
+      <*> (Paragraph <$> arbitrary)
 
 instance (Arbitrary a) => Arbitrary (CoverLetterContent a) where
   arbitrary :: Gen (CoverLetterContent a)
