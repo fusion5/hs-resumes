@@ -7,10 +7,6 @@ import Data.Aeson (FromJSON, ToJSON)
 import Data.Text
 import GHC.Generics
 
-data CoverLetterContent a = Paragraph a | List [CoverLetterContent a]
-  deriving (Eq, Show, Generic, Functor)
-  deriving (FromJSON, ToJSON) via (Autodocodec (CoverLetterContent a))
-
 data CoverLetter a = CoverLetter
   { currentLocation :: a,
     addressedTo :: Text,
@@ -19,9 +15,14 @@ data CoverLetter a = CoverLetter
   deriving (Eq, Show, Generic, Functor)
   deriving (FromJSON, ToJSON) via (Autodocodec (CoverLetter a))
 
+data CoverLetterContent a = Paragraph a | List [CoverLetterContent a]
+  deriving (Eq, Show, Generic, Functor)
+  deriving (FromJSON, ToJSON) via (Autodocodec (CoverLetterContent a))
+
 instance (HasCodec a) => HasCodec (CoverLetterContent a) where
   codec =
-    disjointMatchChoiceCodec paragraphCodec coverLetterListCodec decide
+    named "Content" $
+      disjointMatchChoiceCodec paragraphCodec coverLetterListCodec decide
     where
       decide :: CoverLetterContent a -> Either (CoverLetterContent a) (CoverLetterContent a)
       decide x@(Paragraph {}) = Left x
@@ -31,7 +32,7 @@ instance (HasCodec a) => HasCodec (CoverLetterContent a) where
         object "Paragraph" $ Paragraph <$> requiredField "p" "Paragraph" .= unParagraph
 
       coverLetterListCodec =
-        object "List" $ List <$> requiredField "l" "List" .= unList
+        object "List" $ List <$> requiredField "list" "List" .= unList
 
       unParagraph (Paragraph x) = x
       unParagraph _ = error "logical error"

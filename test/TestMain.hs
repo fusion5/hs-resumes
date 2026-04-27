@@ -2,11 +2,14 @@ module TestMain (main) where
 
 import ArbitraryCV ()
 import ArbitraryContextCV ()
+import ArbitraryCoverLetter ()
 import Autodocodec
 import Data.Aeson (FromJSON, Result (..), fromJSON)
 import Data.Foldable (traverse_)
+import Data.Text
 import DocumentTypes.CV
 import DocumentTypes.Common
+import DocumentTypes.CoverLetter
 import PromptResolution (preparePrompts)
 import Samples
   ( cacheC,
@@ -55,12 +58,13 @@ spec = modifyMaxSize (const 20) $ do
           let newDocument = preparePrompts testContextCV documentT2 (Just cacheC)
           newDocument `shouldBeShallow` resultR2
   describe "JSON tests" $ do
-    prop "CV roundtrip" $ prop_codecRoundtrip @(CV TextAtom)
-    prop "CV prompt result roundtrip" $ prop_codecRoundtrip @(CV LLMPromptResultText)
-    prop "ContextCV roundtrip" $ prop_codecRoundtrip @ContextCV
+    prop "CV roundtrip" $ propCodecRoundtrip @(CV TextAtom)
+    prop "CV prompt result roundtrip" $ propCodecRoundtrip @(CV LLMPromptResultText)
+    prop "Cover letter rountrip" $ propCodecRoundtrip @(CoverLetter Text)
+    prop "ContextCV roundtrip" $ propCodecRoundtrip @ContextCV
 
-prop_codecRoundtrip :: (FromJSON a, Eq a, HasCodec a) => a -> Bool
-prop_codecRoundtrip val =
+propCodecRoundtrip :: (FromJSON a, Eq a, HasCodec a) => a -> Bool
+propCodecRoundtrip val =
   let json = toJSONViaCodec val
    in case fromJSON json of
         Success decoded -> decoded == val

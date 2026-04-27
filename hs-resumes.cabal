@@ -185,6 +185,7 @@ test-suite hs-resumes-test
   main-is: TestMain.hs
   other-modules:
       ArbitraryContextCV
+      ArbitraryCoverLetter
       ArbitraryCV
       Samples
       ShallowCV
