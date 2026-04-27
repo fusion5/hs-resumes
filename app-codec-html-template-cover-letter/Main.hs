@@ -9,15 +9,14 @@ import Data.Text
 import Data.Text.Lazy.IO qualified as TIO
 import Data.Time (getCurrentTime, utctDay)
 import Data.Time.Format.ISO8601 (iso8601Show)
-import DocumentTypes.CV (CV)
-import DocumentTypes.Common (LLMPromptResultText (..))
+import DocumentTypes.CoverLetter (CoverLetter)
 import Options.Applicative qualified as Opt
 import System.IO (hPutStrLn, stderr)
 import Text.Mustache
 
 data CLIArgs = CLIArgs
-  { cvInputFile :: FilePath,
-    cvTemplateFile :: FilePath,
+  { letterInputFile :: FilePath,
+    letterTemplateFile :: FilePath,
     templateLanguage :: Maybe String
   }
   deriving (Show)
@@ -26,9 +25,9 @@ cliArgs :: Opt.Parser CLIArgs
 cliArgs =
   CLIArgs
     <$> Opt.strOption
-      ( Opt.long "cv-file"
+      ( Opt.long "cover-letter-file"
           <> Opt.metavar "FILE"
-          <> Opt.help "Input CV file as output by 'app-codec-llm'"
+          <> Opt.help "Input cover letter file (JSON/YAML)"
       )
     <*> Opt.strOption
       ( Opt.long "template-file"
@@ -45,12 +44,12 @@ cliArgs =
 main :: IO ()
 main = do
   CLIArgs {..} <- Opt.execParser cliOpts
-  eitherDecodeFileStrict cvInputFile >>= \case
+  eitherDecodeFileStrict letterInputFile >>= \case
     Left err -> hPutStrLn stderr err
-    Right (cv :: CV LLMPromptResultText) -> do
-      template <- compileMustacheFile cvTemplateFile
+    Right (letter :: CoverLetter Text) -> do
+      template <- compileMustacheFile letterTemplateFile
       today <- utctDay <$> getCurrentTime
-      let simpleCV = fmap (removeTrailingPunctuation . getPromptResultText) cv
+      let simpleCV = fmap removeTrailingPunctuation letter
           (warnings, output) =
             renderMustacheW template $
               mergeObjects (toJSON simpleCV) (extraFields today templateLanguage)

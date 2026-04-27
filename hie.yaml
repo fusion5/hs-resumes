@@ -3,6 +3,12 @@ cradle:
     - path: "src"
       component: "lib:hs-resumes"
 
+    - path: "app-codec-html-template-cover-letter/Main.hs"
+      component: "hs-resumes:exe:codec-html-template-cover-letter"
+
+    - path: "app-codec-html-template-cover-letter/Paths_hs_resumes.hs"
+      component: "hs-resumes:exe:codec-html-template-cover-letter"
+
     - path: "app-codec-html-template-cv/Main.hs"
       component: "hs-resumes:exe:codec-html-template-cv"
 

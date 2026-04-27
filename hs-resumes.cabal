@@ -54,6 +54,48 @@ library
     , text
   default-language: Haskell2010
 
+executable codec-html-template-cover-letter
+  main-is: Main.hs
+  other-modules:
+      Paths_hs_resumes
+  hs-source-dirs:
+      app-codec-html-template-cover-letter
+  default-extensions:
+      DataKinds
+      DeriveFunctor
+      DeriveGeneric
+      GeneralizedNewtypeDeriving
+      ImportQualifiedPost
+      LambdaCase
+      OverloadedStrings
+      QuasiQuotes
+      RecordWildCards
+      ScopedTypeVariables
+      StrictData
+      TypeApplications
+  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints -main-is Main
+  build-depends:
+      aeson
+    , aeson-pretty
+    , autodocodec
+    , autodocodec-yaml
+    , base >=4.7 && <5
+    , base16-bytestring
+    , base64-bytestring
+    , bytestring
+    , containers
+    , cryptohash-md5
+    , hs-resumes
+    , mtl
+    , ollama-haskell
+    , optparse-applicative
+    , pretty-simple
+    , serialise
+    , stache
+    , text
+    , time
+  default-language: Haskell2010
+
 executable codec-html-template-cv
   main-is: Main.hs
   other-modules:
@@ -73,7 +115,7 @@ executable codec-html-template-cv
       ScopedTypeVariables
       StrictData
       TypeApplications
-  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints -main-is Main
   build-depends:
       aeson
     , aeson-pretty
@@ -115,7 +157,7 @@ executable codec-llm
       ScopedTypeVariables
       StrictData
       TypeApplications
-  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Werror -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wno-orphans -Wpartial-fields -Wredundant-constraints -main-is Main
   build-depends:
       aeson
     , aeson-pretty

@@ -60,26 +60,27 @@ library:
 
 executables:
   codec-llm:
-    main: Main.hs
+    main: Main
     source-dirs:
       - app-codec-llm
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
     dependencies:
       - directory
       - hs-resumes
       - optparse-applicative
       - path
   codec-html-template-cv:
-    main: Main.hs
+    main: Main
     source-dirs:
       - app-codec-html-template-cv
-    ghc-options:
-      - -threaded
-      - -rtsopts
-      - -with-rtsopts=-N
+    dependencies:
+      - hs-resumes
+      - optparse-applicative
+      - stache
+      - time
+  codec-html-template-cover-letter:
+    main: Main
+    source-dirs:
+      - app-codec-html-template-cover-letter
     dependencies:
       - hs-resumes
       - optparse-applicative

@@ -8,7 +8,7 @@ import Data.Text
 import GHC.Generics
 
 data CoverLetterContent a = Paragraph a | List [CoverLetterContent a]
-  deriving (Eq, Show, Generic)
+  deriving (Eq, Show, Generic, Functor)
   deriving (FromJSON, ToJSON) via (Autodocodec (CoverLetterContent a))
 
 data CoverLetter a = CoverLetter
@@ -16,7 +16,7 @@ data CoverLetter a = CoverLetter
     addressedTo :: Text,
     paragraphs :: CoverLetterContent a
   }
-  deriving (Eq, Show, Generic)
+  deriving (Eq, Show, Generic, Functor)
   deriving (FromJSON, ToJSON) via (Autodocodec (CoverLetter a))
 
 instance (HasCodec a) => HasCodec (CoverLetterContent a) where
