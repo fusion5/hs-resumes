@@ -1,6 +1,6 @@
 {-# LANGUAGE DerivingVia #-}
-{-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 module ArbitraryCoverLetter () where
 
@@ -11,7 +11,14 @@ import Test.QuickCheck.Instances ()
 
 instance (Arbitrary a) => Arbitrary (CoverLetter a) where
   arbitrary :: Gen (CoverLetter a)
-  arbitrary = CoverLetter <$> arbitrary <*> arbitrary <*> (Paragraph <$> arbitrary) -- arbitrary
+  arbitrary =
+    CoverLetter
+      <$> arbitrary
+      <*> arbitrary
+      <*> arbitrary
+      <*> arbitrary
+      <*> arbitrary
+      <*> (Paragraph <$> arbitrary) -- arbitrary
 
 instance (Arbitrary a) => Arbitrary (CoverLetterContent a) where
   arbitrary :: Gen (CoverLetterContent a)

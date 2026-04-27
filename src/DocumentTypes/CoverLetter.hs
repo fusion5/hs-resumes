@@ -4,12 +4,14 @@ module DocumentTypes.CoverLetter (module DocumentTypes.CoverLetter) where
 
 import Autodocodec
 import Data.Aeson (FromJSON, ToJSON)
-import Data.Text
 import GHC.Generics
 
 data CoverLetter a = CoverLetter
   { currentLocation :: a,
-    addressedTo :: Text,
+    addressedTo :: a,
+    addressedToLocation :: a,
+    jobPostingTitle :: a,
+    jobPostingURL :: a,
     paragraphs :: CoverLetterContent a
   }
   deriving (Eq, Show, Generic, Functor)
@@ -44,5 +46,8 @@ instance (HasCodec a) => HasCodec (CoverLetter a) where
     object "CoverLetter" $
       CoverLetter
         <$> requiredField "location" "Location" .= currentLocation
-        <*> requiredField "to" "Addressed to" .= addressedTo
+        <*> requiredField "company" "Company" .= addressedTo
+        <*> requiredField "companyLocation" "Company location" .= addressedToLocation
+        <*> requiredField "jobPostingTitle" "Job Posting Title" .= jobPostingTitle
+        <*> requiredField "jobPostingURL" "Job Posting URL" .= jobPostingURL
         <*> requiredField "paragraphs" "Contents" .= paragraphs
