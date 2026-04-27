@@ -7,17 +7,17 @@ import Data.Aeson.Encode.Pretty (encodePretty)
 import Data.ByteString.Lazy.Char8 qualified as LBL
 import Data.Ollama.Chat
 import DocumentTypes.CV
-import Lib
 import Options.Applicative qualified as Opt
 import Path.Posix
+import PromptResolution
 import System.Directory (doesFileExist)
 import System.IO (hPutStrLn, stderr)
 
 data CLIArgs = CLIArgs
-  { contextInputFile :: FilePath
-  , cvInputFile :: FilePath
-  , documentOldInputFile :: Maybe FilePath
-  , documentOutputFile :: Maybe FilePath
+  { contextInputFile :: FilePath,
+    cvInputFile :: FilePath,
+    documentOldInputFile :: Maybe FilePath,
+    documentOutputFile :: Maybe FilePath
   }
   deriving (Show)
 
@@ -52,19 +52,19 @@ cliArgs =
 ollamaConfig :: OllamaConfig
 ollamaConfig =
   OllamaConfig
-    { hostUrl = "http://127.0.0.1:11434" -- TODO: make it passable as CLI argument
-    , timeout = 180
-    , onModelStart = Nothing
-    , onModelFinish = Nothing
-    , onModelError = Nothing
-    , retryCount = Nothing
-    , retryDelay = Nothing
-    , commonManager = Nothing -- TODO: add common manager
+    { hostUrl = "http://127.0.0.1:11434", -- TODO: make it passable as CLI argument
+      timeout = 180,
+      onModelStart = Nothing,
+      onModelFinish = Nothing,
+      onModelError = Nothing,
+      retryCount = Nothing,
+      retryDelay = Nothing,
+      commonManager = Nothing -- TODO: add common manager
     }
 
 main :: IO ()
 main = do
-  CLIArgs{..} <- Opt.execParser cliOpts
+  CLIArgs {..} <- Opt.execParser cliOpts
   contextPosixPath <- parseRelFile contextInputFile
   cvPosixPath <- parseRelFile cvInputFile
   readYamlConfigFile contextPosixPath >>= \case
@@ -82,10 +82,10 @@ main = do
                 else do
                   hPutStrLn stderr $ unwords ["Old CV file does not exist!", oldFile]
                   resolveLLM documentOutputFile context cv Nothing
- where
-  cliOpts = Opt.info (cliArgs Opt.<**> Opt.helper) Opt.fullDesc
-  resolveLLM documentOutputFileMaybe context cv oldCVMaybe = do
-    result <- resolvePrompts ollamaConfig $ preparePrompts context cv oldCVMaybe
-    case documentOutputFileMaybe of
-      Nothing -> LBL.putStrLn $ encodePretty (toJSONViaCodec result)
-      Just outFile -> LBL.writeFile outFile $ encodePretty (toJSONViaCodec result)
+  where
+    cliOpts = Opt.info (cliArgs Opt.<**> Opt.helper) Opt.fullDesc
+    resolveLLM documentOutputFileMaybe context cv oldCVMaybe = do
+      result <- resolvePrompts ollamaConfig $ preparePrompts context cv oldCVMaybe
+      case documentOutputFileMaybe of
+        Nothing -> LBL.putStrLn $ encodePretty (toJSONViaCodec result)
+        Just outFile -> LBL.writeFile outFile $ encodePretty (toJSONViaCodec result)

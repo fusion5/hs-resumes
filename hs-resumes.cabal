@@ -15,7 +15,6 @@ build-type:     Simple
 library
   exposed-modules:
       DocumentTypes.CV
-      Lib
       PromptResolution
   other-modules:
       Paths_hs_resumes
@@ -57,7 +56,6 @@ executable codec-html-template
   main-is: Main.hs
   other-modules:
       DocumentTypes.CV
-      Lib
       PromptResolution
       Paths_hs_resumes
   hs-source-dirs:
@@ -103,7 +101,6 @@ executable codec-llm
   main-is: Main.hs
   other-modules:
       DocumentTypes.CV
-      Lib
       PromptResolution
       Paths_hs_resumes
   hs-source-dirs:
@@ -155,7 +152,6 @@ test-suite hs-resumes-test
       ShallowCV
       ShallowEq
       DocumentTypes.CV
-      Lib
       PromptResolution
       Paths_hs_resumes
   hs-source-dirs:
