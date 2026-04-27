@@ -3,11 +3,11 @@ cradle:
     - path: "src"
       component: "lib:hs-resumes"
 
-    - path: "app-codec-html-template/Main.hs"
-      component: "hs-resumes:exe:codec-html-template"
+    - path: "app-codec-html-template-cv/Main.hs"
+      component: "hs-resumes:exe:codec-html-template-cv"
 
-    - path: "app-codec-html-template/Paths_hs_resumes.hs"
-      component: "hs-resumes:exe:codec-html-template"
+    - path: "app-codec-html-template-cv/Paths_hs_resumes.hs"
+      component: "hs-resumes:exe:codec-html-template-cv"
 
     - path: "app-codec-llm/Main.hs"
       component: "hs-resumes:exe:codec-llm"
@@ -16,7 +16,4 @@ cradle:
       component: "hs-resumes:exe:codec-llm"
 
     - path: "test"
-      component: "hs-resumes:test:hs-resumes-test"
-
-    - path: "hs-resumes"
       component: "hs-resumes:test:hs-resumes-test"

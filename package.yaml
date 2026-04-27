@@ -61,7 +61,7 @@ library:
 executables:
   codec-llm:
     main: Main.hs
-    source-dirs: 
+    source-dirs:
       - app-codec-llm
     ghc-options:
       - -threaded
@@ -72,10 +72,10 @@ executables:
       - hs-resumes
       - optparse-applicative
       - path
-  codec-html-template:
+  codec-html-template-cv:
     main: Main.hs
-    source-dirs: 
-      - app-codec-html-template
+    source-dirs:
+      - app-codec-html-template-cv
     ghc-options:
       - -threaded
       - -rtsopts
@@ -91,9 +91,9 @@ tests:
     main: TestMain
     source-dirs:
       - test
-      - hs-resumes
     dependencies:
       - HUnit
+      - hs-resumes
       - QuickCheck
       - call-stack
       - generic-arbitrary
