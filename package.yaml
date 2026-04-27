@@ -82,6 +82,7 @@ executables:
     source-dirs:
       - app-codec-html-template-cover-letter
     dependencies:
+      - path
       - hs-resumes
       - optparse-applicative
       - stache

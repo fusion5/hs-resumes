@@ -89,6 +89,7 @@ executable codec-html-template-cover-letter
     , mtl
     , ollama-haskell
     , optparse-applicative
+    , path
     , pretty-simple
     , serialise
     , stache

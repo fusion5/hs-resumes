@@ -1,7 +1,8 @@
 module Main (main) where
 
+import Autodocodec.Yaml (readYamlConfigFile)
 import Control.Monad
-import Data.Aeson (Value (Object), eitherDecodeFileStrict, object, toJSON, (.=))
+import Data.Aeson (Value (Object), object, toJSON, (.=))
 import Data.Aeson.KeyMap qualified as KM
 import Data.Maybe (fromMaybe)
 import Data.String (fromString)
@@ -11,6 +12,7 @@ import Data.Time (getCurrentTime, utctDay)
 import Data.Time.Format.ISO8601 (iso8601Show)
 import DocumentTypes.CoverLetter (CoverLetter)
 import Options.Applicative qualified as Opt
+import Path.Posix
 import System.IO (hPutStrLn, stderr)
 import Text.Mustache
 
@@ -27,7 +29,7 @@ cliArgs =
     <$> Opt.strOption
       ( Opt.long "cover-letter-file"
           <> Opt.metavar "FILE"
-          <> Opt.help "Input cover letter file (JSON/YAML)"
+          <> Opt.help "Input cover letter file (YAML)"
       )
     <*> Opt.strOption
       ( Opt.long "template-file"
@@ -44,15 +46,16 @@ cliArgs =
 main :: IO ()
 main = do
   CLIArgs {..} <- Opt.execParser cliOpts
-  eitherDecodeFileStrict letterInputFile >>= \case
-    Left err -> hPutStrLn stderr err
-    Right (letter :: CoverLetter Text) -> do
+  inputFile <- parseRelFile letterInputFile
+  readYamlConfigFile inputFile >>= \case
+    Nothing -> hPutStrLn stderr "Could not open input file!"
+    Just (letter :: CoverLetter Text) -> do
       template <- compileMustacheFile letterTemplateFile
       today <- utctDay <$> getCurrentTime
-      let simpleCV = fmap removeTrailingPunctuation letter
+      let coverLetter = fmap removeTrailingPunctuation letter
           (warnings, output) =
             renderMustacheW template $
-              mergeObjects (toJSON simpleCV) (extraFields today templateLanguage)
+              mergeObjects (toJSON coverLetter) (extraFields today templateLanguage)
       TIO.putStrLn output
       unless (Prelude.null warnings) $ do
         hPutStrLn stderr "Mustache warnings:"
