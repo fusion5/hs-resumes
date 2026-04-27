@@ -3,7 +3,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module DocumentTypes (module DocumentTypes) where
+module DocumentTypes.CV (module DocumentTypes.CV) where
 
 import Autodocodec
 import Data.Aeson (FromJSON, ToJSON)

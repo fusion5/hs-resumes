@@ -1,6 +1,6 @@
 module ArbitraryContextCV () where
 
-import DocumentTypes
+import DocumentTypes.CV
 import Test.QuickCheck.Arbitrary
 import Test.QuickCheck.Instances ()
 

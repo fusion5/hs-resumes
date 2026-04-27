@@ -5,7 +5,7 @@ import ArbitraryContextCV ()
 import Autodocodec
 import Data.Aeson (FromJSON, Result (..), fromJSON)
 import Data.Foldable (traverse_)
-import DocumentTypes
+import DocumentTypes.CV
 import PromptResolution (preparePrompts)
 import Samples
   ( cacheC,

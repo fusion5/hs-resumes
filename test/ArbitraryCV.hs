@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveAnyClass #-}
-{-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DerivingVia #-}
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE StandaloneDeriving #-}
@@ -8,7 +6,7 @@
 module ArbitraryCV () where
 
 import Data.Text
-import DocumentTypes
+import DocumentTypes.CV
 import Test.QuickCheck.Arbitrary
 import Test.QuickCheck.Gen
 import Test.QuickCheck.Instances ()

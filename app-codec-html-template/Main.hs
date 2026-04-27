@@ -9,7 +9,7 @@ import Data.Text
 import Data.Text.Lazy.IO qualified as TIO
 import Data.Time (getCurrentTime, utctDay)
 import Data.Time.Format.ISO8601 (iso8601Show)
-import DocumentTypes
+import DocumentTypes.CV
 import Options.Applicative qualified as Opt
 import System.IO (hPutStrLn, stderr)
 import Text.Mustache

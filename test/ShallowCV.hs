@@ -1,6 +1,6 @@
 module ShallowCV () where
 
-import DocumentTypes
+import DocumentTypes.CV
 import ShallowEq
 
 instance (ShallowEq a) => ShallowEq (CV a)

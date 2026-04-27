@@ -6,7 +6,7 @@ import Data.Aeson (decodeFileStrict)
 import Data.Aeson.Encode.Pretty (encodePretty)
 import Data.ByteString.Lazy.Char8 qualified as LBL
 import Data.Ollama.Chat
-import DocumentTypes
+import DocumentTypes.CV
 import Lib
 import Options.Applicative qualified as Opt
 import Path.Posix
