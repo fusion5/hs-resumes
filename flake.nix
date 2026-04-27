@@ -22,12 +22,14 @@
         pkgs,
         # config,
         ...
-      }: {
+      }: let
+        haskellPackages = pkgs.haskell.packages.ghc9122;
+      in {
         haskellProjects.default = {
           # The base package set representing a specific GHC version.
           # By default, this is pkgs.haskellPackages.
           # You may also create your own. See https://community.flake.parts/haskell-flake/package-set
-          basePackages = pkgs.haskell.packages.ghc9122;
+          basePackages = haskellPackages;
 
           # Extra package information. See https://community.flake.parts/haskell-flake/dependency
           #
@@ -89,6 +91,7 @@
                   echo "dist-newstyle already exists or is a link. Skipping link creation."
                 fi
                 ${pkgs.hpack}/bin/hpack
+                ${haskellPackages.implicit-hie}/bin/gen-hie > hie.yaml
               '';
             };
           };

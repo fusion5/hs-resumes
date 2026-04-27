@@ -1,0 +1,22 @@
+cradle:
+  cabal:
+    - path: "src"
+      component: "lib:hs-resumes"
+
+    - path: "app-codec-html-template/Main.hs"
+      component: "hs-resumes:exe:codec-html-template"
+
+    - path: "app-codec-html-template/Paths_hs_resumes.hs"
+      component: "hs-resumes:exe:codec-html-template"
+
+    - path: "app-codec-llm/Main.hs"
+      component: "hs-resumes:exe:codec-llm"
+
+    - path: "app-codec-llm/Paths_hs_resumes.hs"
+      component: "hs-resumes:exe:codec-llm"
+
+    - path: "test"
+      component: "hs-resumes:test:hs-resumes-test"
+
+    - path: "src"
+      component: "hs-resumes:test:hs-resumes-test"

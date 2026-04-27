@@ -63,7 +63,6 @@ executables:
     main: Main.hs
     source-dirs: 
       - app-codec-llm
-      - src
     ghc-options:
       - -threaded
       - -rtsopts
@@ -77,7 +76,6 @@ executables:
     main: Main.hs
     source-dirs: 
       - app-codec-html-template
-      - src
     ghc-options:
       - -threaded
       - -rtsopts
