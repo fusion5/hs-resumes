@@ -6,6 +6,7 @@ import Autodocodec
 import Data.Aeson (FromJSON, Result (..), fromJSON)
 import Data.Foldable (traverse_)
 import DocumentTypes.CV
+import DocumentTypes.Common
 import PromptResolution (preparePrompts)
 import Samples
   ( cacheC,

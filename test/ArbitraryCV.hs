@@ -7,6 +7,7 @@ module ArbitraryCV () where
 
 import Data.Text
 import DocumentTypes.CV
+import DocumentTypes.Common
 import Test.QuickCheck.Arbitrary
 import Test.QuickCheck.Gen
 import Test.QuickCheck.Instances ()
@@ -31,7 +32,7 @@ instance (Arbitrary a) => Arbitrary (CV a) where
       <*> arbitrary
       <*> arbitrary
 
-deriving via (Text) instance Arbitrary TextAtom
+deriving via Text instance Arbitrary TextAtom
 
 instance Arbitrary ProgrammingLanguage where
   arbitrary = ProgrammingLanguage <$> arbitrary <*> arbitrary
@@ -86,8 +87,8 @@ instance (Arbitrary a) => Arbitrary (WorkExperience a) where
 instance (Arbitrary a) => Arbitrary (ExperienceType a) where
   arbitrary =
     oneof
-      [ EmployeeExperience <$> arbitrary
-      , SelfEmployedExperience <$> arbitrary
+      [ EmployeeExperience <$> arbitrary,
+        SelfEmployedExperience <$> arbitrary
       ]
 
 instance (Arbitrary a) => Arbitrary (Responsibility a) where

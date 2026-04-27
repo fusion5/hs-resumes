@@ -19,6 +19,7 @@ import Data.Ollama.Chat
 import Data.Sequence as Seq
 import Data.Text as Text
 import DocumentTypes.CV
+import DocumentTypes.Common
 import GHC.Generics
 import GHC.IsList qualified as IsList
 import Text.Pretty.Simple (pPrint)

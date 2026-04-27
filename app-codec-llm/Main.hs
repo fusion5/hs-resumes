@@ -7,6 +7,7 @@ import Data.Aeson.Encode.Pretty (encodePretty)
 import Data.ByteString.Lazy.Char8 qualified as LBL
 import Data.Ollama.Chat
 import DocumentTypes.CV
+import DocumentTypes.Common
 import Options.Applicative qualified as Opt
 import Path.Posix
 import PromptResolution

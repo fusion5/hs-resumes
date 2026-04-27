@@ -2,6 +2,7 @@ module Samples (module Samples) where
 
 import Data.Ollama.Chat
 import DocumentTypes.CV
+import DocumentTypes.Common
 
 testContextCV :: ContextCV
 testContextCV =
