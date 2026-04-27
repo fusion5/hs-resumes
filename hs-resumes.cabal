@@ -147,14 +147,10 @@ test-suite hs-resumes-test
       Samples
       ShallowCV
       ShallowEq
-      DocumentTypes.Common
-      DocumentTypes.CoverLetter
-      DocumentTypes.CV
-      PromptResolution
       Paths_hs_resumes
   hs-source-dirs:
       test
-      src
+      hs-resumes
   default-extensions:
       DataKinds
       DeriveFunctor

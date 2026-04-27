@@ -18,5 +18,5 @@ cradle:
     - path: "test"
       component: "hs-resumes:test:hs-resumes-test"
 
-    - path: "src"
+    - path: "hs-resumes"
       component: "hs-resumes:test:hs-resumes-test"

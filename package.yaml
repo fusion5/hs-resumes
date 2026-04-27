@@ -91,7 +91,7 @@ tests:
     main: TestMain
     source-dirs:
       - test
-      - src
+      - hs-resumes
     dependencies:
       - HUnit
       - QuickCheck
